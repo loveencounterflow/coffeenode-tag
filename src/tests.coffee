@@ -3,63 +3,177 @@
 
 
 ############################################################################################################
+assert                    = require 'assert'
+assert                    = require 'assert'
+#...........................................................................................................
 TYPES                     = require 'coffeenode-types'
 #...........................................................................................................
 TRM                       = require 'coffeenode-trm'
 rpr                       = TRM.rpr.bind TRM
 log                       = TRM.log.bind TRM
 echo                      = TRM.echo.bind TRM
-TAG 											= require '..'
+#...........................................................................................................
+T                         = require '..'
 
-tr  = TAG.new_registry()
-
-entry_xsc = TAG.new_object  tr, 'xsc', 'extra-shapeclasses'
-entry_hgv = TAG.new_object  tr, 'hgv', 'harigaya-variants'
-entry_iic = TAG.new_object  tr, 'iic', 'IRGN1067R2_IICore22_MappingTable'
-entry_mng = TAG.new_object  tr, 'mng', 'meanings'
-entry_rj4 = TAG.new_object  tr, 'rj4', 'reform-japan-1949'
-entry_rja = TAG.new_object  tr, 'rja', 'reform-japan-asahi'
-entry_rc6 = TAG.new_object  tr, 'rc6', 'reform-prc-1964'
-
-tag_FCT   = TAG.new_tag     tr, 'FCT', 'DSG:FACTORS'
-tag_FRM   = TAG.new_tag     tr, 'FRM', 'DSG:FORMULA'
-tag_FRQ   = TAG.new_tag     tr, 'FRQ', 'DSG:FREQUENCY'
-tag_GDS   = TAG.new_tag     tr, 'GDS', 'DSG:GUIDES'
-tag_MNG   = TAG.new_tag     tr, 'MNG', 'DSG:MEANINGS'
-tag_SHP   = TAG.new_tag     tr, 'SHP', 'DSG:SHAPE'
-tag_SMP   = TAG.new_tag     tr, 'SMP', 'DSG:SIMPLIFICATION'
-tag_USG   = TAG.new_tag     tr, 'USG', 'DSG:USAGE'
-tag_VAR   = TAG.new_tag     tr, 'VAR', 'DSG:VARIANT'
-tag_SIM   = TAG.new_tag     tr, 'SIM', 'DSG:SIMILARITY'
-
-log TAG.link tr, 'xsc', 'hgv', 'FCT', 'SIM'
-log TAG.link tr, 'xsc', 'USG'
-log TAG.link tr, 'xsc', 'USG'
-log
-
-log TRM.green entry_xsc
-log TRM.green entry_hgv
-log TRM.red   tag_FCT
-log TRM.red   tag_SIM
-
-
-log TAG.all_linked  tr, 'FCT', 'SIM', 'xsc', 'hgv'
-log TAG.all_linked  tr, 'xsc', 'hgv', 'FCT', 'SIM', 'SHP'
-log TAG.is_linked   tr, 'hgv', 'VAR'
-log TAG.is_linked   tr, 'hgv', 'FCT'
-
-log TAG.tags_of     tr, 'hgv'
-log TAG.tags_of     tr, 'FCT'
-
-# for id, entry of tr[ 'entry-by-id' ]
-#   log TRM.rainbow entry
-
-
-
-
-
+#===========================================================================================================
+# HELPERS
+#-----------------------------------------------------------------------------------------------------------
+get_sample_registry = ->
+  R = T.new_registry()
+  T.new_object R, 'xsc', 'extra-shapeclasses'
+  T.new_object R, 'hgv', 'harigaya-variants'
+  T.new_object R, 'iic', 'IRGN1067R2_IICore22_MappingTable'
+  T.new_object R, 'mng', 'meanings'
+  T.new_object R, 'rj4', 'reform-japan-1949'
+  T.new_object R, 'rja', 'reform-japan-asahi'
+  T.new_object R, 'rc6', 'reform-prc-1964'
+  T.new_object R, 'rsg', 'reform-singapore'
+  T.new_object R, 'rbc', 'remarks-beacons'
+  T.new_object R, 'sfn', 'shape-breakdown-formula-naive'
+  T.new_object R, 'sbf', 'shape-breakdown-formula'
+  T.new_object R, 'sco', 'shape-constituents'
+  T.new_object R, 'fth', 'shape-figural-themes'
+  T.new_object R, 'sgh', 'shape-guides-hierarchy'
+  T.new_object R, 'sgs', 'shape-guides-similarity'
+  T.new_object R, 'sid', 'shape-similarity-identity'
+  T.new_object R, 'so5', 'shape-strokeorder-zhaziwubifa'
+  T.new_object R, 'uhv', 'Unihan_Variants'
+  T.new_object R, 'umc', 'usage-missing-chrs'
+  T.new_object R, 'uj1', 'usage-rank-ja-chubu-2050chrs-2050ranks'
+  T.new_object R, 'uj2', 'usage-rank-ja-kanjicards-2500chrs-2500ranks'
+  T.new_object R, 'uj3', 'usage-rank-ja-koohii-9920chrs-3250ranks'
+  T.new_object R, 'uj4', 'usage-rank-ja-leedscorpus-words-2300chrs-1700ranks'
+  T.new_object R, 'uc1', 'usage-rank-zhcn-leedscorpus-chrs-6800chrs-3500ranks'
+  T.new_object R, 'uc2', 'usage-rank-zhcn-leedscorpus-words-1950chrs-490ranks'
+  T.new_object R, 'uc3', 'usage-rank-zhcn-upennldc-words-4550chrs-1100ranks'
+  T.new_object R, 'vau', 'variants-and-usage'
+  T.new_tag    R, 'FCT', 'DSG:FACTORS'
+  T.new_tag    R, 'FRM', 'DSG:FORMULA'
+  T.new_tag    R, 'FRQ', 'DSG:FREQUENCY'
+  T.new_tag    R, 'GDS', 'DSG:GUIDES'
+  T.new_tag    R, 'MNG', 'DSG:MEANINGS'
+  T.new_tag    R, 'SHP', 'DSG:SHAPE'
+  T.new_tag    R, 'SMP', 'DSG:SIMPLIFICATION'
+  T.new_tag    R, 'USG', 'DSG:USAGE'
+  T.new_tag    R, 'VAR', 'DSG:VARIANT'
+  T.new_tag    R, 'SIM', 'DSG:SIMILARITY'
+  #.........................................................................................................
+  return R
 
 
+#-----------------------------------------------------------------------------------------------------------
+tag_sample = ( registry ) ->
+  T.tag registry, 'xsc', 'SHP', 'FCT', 'GDS'
+  T.tag registry, 'hgv', 'VAR'
+  T.tag registry, 'iic', 'FRQ'
+  T.tag registry, 'mng', 'MNG'
+  T.tag registry, 'rj4', 'SMP', 'VAR'
+  T.tag registry, 'rja', 'SMP', 'VAR'
+  T.tag registry, 'rc6', 'SMP', 'VAR'
+  T.tag registry, 'rsg', 'SMP', 'VAR'
+  T.tag registry, 'rbc', 'GDS'
+  T.tag registry, 'sfn', 'SHP', 'SMP'
+  T.tag registry, 'sbf', 'SHP', 'SMP'
+  T.tag registry, 'sco', 'SHP', 'FCT', 'GDS'
+  T.tag registry, 'fth', 'SHP'
+
+#===========================================================================================================
+# TESTS
+#-----------------------------------------------------------------------------------------------------------
+@make_registry = ( test ) ->
+  assert.equal ( TYPES.type_of T.new_registry() ), 'TAGTOOL/registry'
+  #.........................................................................................................
+  test.done()
+
+#-----------------------------------------------------------------------------------------------------------
+@make_object = ( test ) ->
+  tr          = T.new_registry()
+  attributes  = some: 'value'
+  object      = T.new_object tr, 'myid', 'my name', attributes
+  assert.equal ( TYPES.type_of object ), 'TAGTOOL/object'
+  assert.equal object[ 'id' ], 'myid'
+  assert.equal object[ 'name' ], 'my name'
+  assert.deepEqual object[ 'attributes' ], attributes
+  assert.notEqual  object[ 'attributes' ], attributes
+  #.........................................................................................................
+  test.done()
+
+#-----------------------------------------------------------------------------------------------------------
+@make_tag = ( test ) ->
+  tr          = T.new_registry()
+  tag         = T.new_tag tr, 'myid', 'my name'
+  assert.equal ( TYPES.type_of tag ), 'TAGTOOL/tag'
+  assert.equal tag[ 'id' ], 'myid'
+  assert.equal tag[ 'name' ], 'my name'
+  #.........................................................................................................
+  test.done()
+
+#-----------------------------------------------------------------------------------------------------------
+@test_tagging = ( test ) ->
+  tr          = T.new_registry()
+  tag         = T.new_tag tr,     'TAGID', 'tag name'
+  object      = T.new_object tr,  'OBJID', 'obj name'
+  #.........................................................................................................
+  count       = T.tag tr, 'TAGID', 'OBJID'
+  assert.equal count, 1
+  count       = T.tag tr, 'TAGID', 'OBJID'
+  assert.equal count, 0
+  assert.deepEqual ( T.tids_of tr, 'OBJID' ), [ 'TAGID', ]
+  # log TRM.steel T.ids_of tr, 'OBJID'
+  assert.deepEqual ( T.tids_of tr, 'OBJID' ), T.ids_of tr, 'OBJID'
+  assert.deepEqual ( T.oids_of tr, 'TAGID' ), [ 'OBJID', ]
+  assert.deepEqual ( T.oids_of tr, 'TAGID' ), T.ids_of tr, 'TAGID'
+  assert.throws ( -> T.oids_of tr, 'OBJID' ), /tag count doesn't match probe '\+' in \[ 'OBJID' \]/
+  assert.throws ( -> T.tids_of tr, 'TAGID' ), /tag count doesn't match probe '-' in \[ 'TAGID' \]/
+  #.........................................................................................................
+  test.done()
+
+# #-----------------------------------------------------------------------------------------------------------
+# @test_all = ->
+#   TR
+#   #.........................................................................................................
+#   test.done()
+
+f = ->
+
+  log T.link tr, 'xsc', 'hgv', 'FCT', 'SIM'
+  log T.link tr, 'xsc', 'USG'
+  log T.link tr, 'xsc', 'USG'
+  log
+
+  log TRM.green entry_xsc
+  log TRM.green entry_hgv
+  log TRM.red   tag_FCT
+  log TRM.red   tag_SIM
+
+
+  log T.all_tagged  tr, 'FCT', 'SIM', 'xsc', 'hgv'
+  log T.all_tagged  tr, 'xsc', 'hgv', 'FCT', 'SIM', 'SHP'
+  log T.is_tagged   tr, 'hgv', 'VAR'
+  log T.is_tagged   tr, 'hgv', 'FCT'
+
+  log T.tids_of     tr, 'hgv'
+  log T.tids_of     tr, 'FCT'
+
+  # for id, entry of tr[ 'entry-by-id' ]
+  #   log TRM.rainbow entry
+
+
+############################################################################################################
+# async_testing @main
+
+# test = done: ->
+
+
+
+tr = get_sample_registry()
+tag_sample tr
+# log tr
+assert.throws ( -> T.tids_of tr, 'FCT' ), /tag count doesn't match probe '-' in \[ 'FCT' \]/
+log TRM.gold T.tids_of tr, 'rsg'
+log TRM.gold T.tids_of tr, 'sco'
+log TRM.gold T.oids_of tr, 'VAR'
+log TRM.gold T.oids_of tr, 'VAR', 'SMP'
 
 
 

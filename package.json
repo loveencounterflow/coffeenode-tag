@@ -4,7 +4,7 @@
   "description": "A simple in-memory tagging library",
   "main": "lib/main.js",
   "scripts": {
-    "test": "node --harmony lib/tests.js",
+    "test": "./node_modules/.bin/asynct lib/tests.js",
     "prepublish": "larq pub",
     "postpublish": "larq dev"
   },
@@ -27,5 +27,20 @@
   "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/loveencounterflow/coffeenode-tag/issues"
+  },
+  "larq": {
+    "extensions": {},
+    "compile-statements": {},
+    "%cache": {
+      "routes": {
+        "lib/main.js": 1,
+        "lib/tests.js": 1
+      }
+    }
+  },
+  "readme": "ERROR: No README data found!",
+  "_id": "coffeenode-tag@0.0.1",
+  "devDependencies": {
+    "asynct": "~1.1.0"
   }
 }
