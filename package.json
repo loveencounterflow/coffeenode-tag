@@ -1,0 +1,31 @@
+{
+  "name": "coffeenode-tag",
+  "version": "0.0.1",
+  "description": "A simple in-memory tagging library",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "node --harmony lib/tests.js",
+    "prepublish": "larq pub",
+    "postpublish": "larq dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loveencounterflow/coffeenode-tag.git"
+  },
+  "dependencies": {
+    "coffee-script": "~1.6.3",
+    "coffeenode-types": "~0.1.0",
+    "coffeenode-trm": "~0.1.6"
+  },
+  "keywords": [
+    "coffescript",
+    "tagging",
+    "tags",
+    "tag"
+  ],
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/loveencounterflow/coffeenode-tag/issues"
+  }
+}
