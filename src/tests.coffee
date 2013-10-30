@@ -166,15 +166,96 @@ f = ->
 
 
 
-tr = get_sample_registry()
-tag_sample tr
-# log tr
-assert.throws ( -> T.tids_of tr, 'FCT' ), /tag count doesn't match probe '-' in \[ 'FCT' \]/
-log TRM.gold T.tids_of tr, 'rsg'
-log TRM.gold T.tids_of tr, 'sco'
-log TRM.gold T.oids_of tr, 'VAR'
-log TRM.gold T.oids_of tr, 'VAR', 'SMP'
+# tr = get_sample_registry()
+# tag_sample tr
+# # log tr
+# assert.throws ( -> T.tids_of tr, 'FCT' ), /tag count doesn't match probe '-' in \[ 'FCT' \]/
+# log TRM.gold T.tids_of tr, 'rsg'
+# log TRM.gold T.tids_of tr, 'sco'
+# log TRM.gold T.oids_of tr, 'VAR'
+# log TRM.gold T.oids_of tr, 'VAR', 'SMP'
+# log TRM.gold T.ids_of  tr, 'VAR', 'SMP', 'sco'
+
+# log()
+# for group in T.objects_of tr, 'VAR', 'SMP'
+#   log TRM.gold group
+
+#           | objects
+#           |
+#      tags | a b c d e f
+#     ------+-------------
+#         A |       x
+#         B | x   x     x
+#         C | x x
+#         D |     x   x
+#         E |           x
+
+# """
+
+#             A B C D E                       a b c d e f
+# tag_state:            =         obj_state:              =
+# tag_state:    +       +B        obj_state:  *   *     * *acf
+# tag_state:    #       = B       obj_state:  #   #     # =acf
+# tag_state:      +     +C        obj_state:  * *         *ab
+# tag_state:    # #     =         obj_state:  # # #     # =abcf
+# tag_state:                      obj_state:          +   +e
+# tag_state:    # #     =         obj_state:  # # #   # # =abcef
+# tag_state:    -       -B        obj_state:  /   /     / /acf
+# tag_state:      #     =C        obj_state:  # #     #   =abe
+
+# """
+
+# association_matrix: { ..., B: { a: x, c: x, f: x, }, ... }
 
 
+T = @
+t = T.new_registry()
+# for tag in 'ABCDEF'
+#   T.new_tag t, tag
+# log TRM.green T.is_known_tag t, 'F'
+# log TRM.red   T.is_known_tag t, 'G'
+# log TRM.steel t
+# T.tag t, 'a', 'B'
+# T.tag t, 'a', 'C'
+# log TRM.yellow t
+# log TRM.green T.has_tag t, 'a', 'B'
+# log TRM.red   T.has_tag t, 'a', 'D'
+# log TRM.gold T.tags_of t, 'a'
+# log TRM.gold T.tags_of t, 'b'
+
+
+tags_and_oids = [
+  [ 'A', 'd',    ]
+  [ 'B', 'acf',  ]
+  [ 'C', 'ab',   ]
+  [ 'D', 'ce',   ]
+  [ 'E', 'f',    ]
+  ]
+
+for [ tag, oids, ] in tags_and_oids
+  log TRM.yellow tag, oids
+  T.new_tag t, tag
+  for oid in oids
+    T.tag t, oid, tag
+
+log TRM.rainbow t
+
+s = T.new_state t
+
+show = ( t, s ) ->
+  log ( TRM.cyan ( x for x of s[ 'oids' ] ).sort().join '' ), ( TRM.pink ( x for x of s[ 'tags' ] ).sort().join '' )
+
+log TRM.lime T.select t, s, null, 'B'
+show t, s
+log TRM.lime T.select t, s, null, 'C'
+show t, s
+log TRM.lime T.select t, s, 'e', null
+show t, s
+log TRM.lime T.deselect t, s, null, 'B'
+show t, s
+for tag in 'abcdef'
+  log tag if T.is_selected t, s, tag
+for oid in 'ABCDEF'
+  log oid if T.is_selected t, s, oid
 
 
