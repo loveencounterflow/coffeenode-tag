@@ -226,7 +226,9 @@ is_subset_of = ( a, b ) ->
   ### Implicit-select all those tags that have all their OIDs selected: ###
   selected_oids = state[ 'oids' ]
   for tag, tagged_oids of me[ 'tags' ]
-    continue if state[ 'tags' ][ tag ]?
+    if state[ 'tags' ][ tag ]?
+      delete state[ 'implicit-tags' ][ tag ]
+      continue
     continue unless is_subset_of tagged_oids, selected_oids
     state[ 'implicit-tags' ][ tag ]  = 1
   #.........................................................................................................
@@ -255,8 +257,26 @@ is_subset_of = ( a, b ) ->
 @get_selected_oids = ( me, state ) ->
   return ( oid for oid of state[ 'oids' ] )
 
-# #-----------------------------------------------------------------------------------------------------------
-# @is_selected = ( me, state, hint ) ->
-#   group_name = if @is_known_tag me, hint then 'tags' else 'oids'
-#   return state[ group_name ][ hint ]?
+#-----------------------------------------------------------------------------------------------------------
+@is_selected_tag = ( me, state, tag ) ->
+  throw new Error "unknown tag #{rpr tag}" unless @is_known_tag me, tag
+  return state[ 'tags' ][ tag ]?
+
+#-----------------------------------------------------------------------------------------------------------
+@is_implicitly_selected_tag = ( me, state, tag ) ->
+  throw new Error "unknown tag #{rpr tag}" unless @is_known_tag me, tag
+  return state[ 'implicit-tags' ][ tag ]?
+
+#-----------------------------------------------------------------------------------------------------------
+@is_selected_oid = ( me, state, oid ) ->
+  throw new Error "unknown oid #{rpr oid}" unless @is_known_oid me, oid
+  return state[ 'oids' ][ oid ]?
+
+#-----------------------------------------------------------------------------------------------------------
+@clear_selection = ( me, state ) ->
+  delete state[ 'tags'          ][ tag ] for tag of state[ 'tags'          ]
+  delete state[ 'implicit-tags' ][ tag ] for tag of state[ 'implicit-tags' ]
+  delete state[ 'oids'          ][ oid ] for oid of state[ 'oids'          ]
+  return state
+
 
