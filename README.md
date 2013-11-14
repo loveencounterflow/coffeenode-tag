@@ -10,7 +10,10 @@ A simple in-memory tagging library.
     npm install coffeenode-tagtool
     TAGTOOL = require 'coffeenode-tagtool'
 
+## Usage
 
+Tags must be registered before their first use; object IDs (OIDs) are registered implicitly by associating
+them with tags.
 
 ------------------------
 
@@ -33,16 +36,9 @@ Create a new tag registry; the Plain Old Object (POD) that is returned has the f
       'state':        null    # result of calling `@_new_state`
 
 
-#### `@new_tag = ( me, tag ) ->`
+#### `@register_tag = ( me, tag ) ->`
 
-
-#### `@clear_selection = ( me ) ->`
-
-
-#### `@deselect_oid = ( me, oid ) ->`
-
-
-#### `@deselect_tag = ( me, tag ) ->`
+Register a new tag in the library.
 
 
 #### `@get_max_oid_count = ( me ) ->`
@@ -51,13 +47,12 @@ Create a new tag registry; the Plain Old Object (POD) that is returned has the f
 #### `@get_max_tag_count = ( me ) ->`
 
 
-#### `@get_selected_oids = ( me ) ->`
+
 
 
 #### `@has_tag = ( me, oid, tag ) ->`
 
 
-#### `@is_implicitly_selected_tag = ( me, tag ) ->`
 
 
 #### `@is_known_oid = ( me, oid ) ->`
@@ -66,19 +61,13 @@ Create a new tag registry; the Plain Old Object (POD) that is returned has the f
 #### `@is_known_tag = ( me, tag ) ->`
 
 
-#### `@is_selected_oid = ( me, oid ) ->`
-
-
-#### `@is_selected_tag = ( me, tag ) ->`
 
 
 #### `@oids_of = ( me, tag = null ) ->`
 
 
-#### `@select_oid = ( me, oid ) ->`
 
 
-#### `@select_tag = ( me, tag ) ->`
 
 
 #### `@tag = ( me, oid, tag ) ->`
@@ -89,6 +78,23 @@ Create a new tag registry; the Plain Old Object (POD) that is returned has the f
 
 #### `@untag = ( me, oid, tag ) ->`
 
+<!-- =================================================================================================== -->
+### Selecting & Deselecting
+
+#### `@select_oid = ( me, oid ) ->`
+#### `@select_tag = ( me, tag ) ->`
+#### `@deselect_oid = ( me, oid ) ->`
+#### `@deselect_tag = ( me, tag ) ->`
+
+Select or deselect the given tag or OID.
+
+#### `@clear_selection = ( me ) ->`
+
+#### `@get_selected_oids = ( me ) ->`
+
+#### `@is_implicitly_selected_tag = ( me, tag ) ->`
+#### `@is_selected_oid = ( me, oid ) ->`
+#### `@is_selected_tag = ( me, tag ) ->`
 
 <!-- =================================================================================================== -->
 ### Private Methods
