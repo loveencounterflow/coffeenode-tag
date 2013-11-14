@@ -1,5 +1,44 @@
 
 
+- [CoffeeNode TagTool](#coffeenode-tagtool)
+	- [Installation](#installation)
+	- [Usage](#usage)
+	- [](#)
+	- [API](#api)
+		- [Object Creation](#object-creation)
+				- [`@new_registry = ->`](#@new_registry-=-->)
+				- [`@register_tag = ( me, tag ) ->`](#@register_tag-=--me-tag--->)
+				- [`@get_max_oid_count = ( me ) ->`](#@get_max_oid_count-=--me--->)
+				- [`@get_max_tag_count = ( me ) ->`](#@get_max_tag_count-=--me--->)
+				- [`@has_tag = ( me, oid, tag ) ->`](#@has_tag-=--me-oid-tag--->)
+				- [`@is_known_oid = ( me, oid ) ->`](#@is_known_oid-=--me-oid--->)
+				- [`@is_known_tag = ( me, tag ) ->`](#@is_known_tag-=--me-tag--->)
+				- [`@oids_of = ( me, tag = null ) ->`](#@oids_of-=--me-tag-=-null--->)
+				- [`@tag = ( me, oid, tag ) ->`](#@tag-=--me-oid-tag--->)
+				- [`@tags_of = ( me, oid ) ->`](#@tags_of-=--me-oid--->)
+				- [`@untag = ( me, oid, tag ) ->`](#@untag-=--me-oid-tag--->)
+		- [Selecting & Deselecting](#selecting-&-deselecting)
+				- [`@select_oid = ( me, oid ) ->`](#@select_oid-=--me-oid--->)
+				- [`@select_tag = ( me, tag ) ->`](#@select_tag-=--me-tag--->)
+				- [`@deselect_oid = ( me, oid ) ->`](#@deselect_oid-=--me-oid--->)
+				- [`@deselect_tag = ( me, tag ) ->`](#@deselect_tag-=--me-tag--->)
+				- [`@clear_selection = ( me ) ->`](#@clear_selection-=--me--->)
+				- [`@get_selected_oids = ( me ) ->`](#@get_selected_oids-=--me--->)
+				- [`@is_implicitly_selected_tag = ( me, tag ) ->`](#@is_implicitly_selected_tag-=--me-tag--->)
+				- [`@is_selected_oid = ( me, oid ) ->`](#@is_selected_oid-=--me-oid--->)
+				- [`@is_selected_tag = ( me, tag ) ->`](#@is_selected_tag-=--me-tag--->)
+		- [Private Methods](#private-methods)
+				- [`@_deselect_implicit_tags = ( me ) ->`](#@_deselect_implicit_tags-=--me--->)
+				- [`@_get_all_oids = ( me ) ->`](#@_get_all_oids-=--me--->)
+				- [`@_get_all_oids_and_max_oid_count = ( me ) ->`](#@_get_all_oids_and_max_oid_count-=--me--->)
+				- [`@_new_state = ( me ) ->`](#@_new_state-=--me--->)
+				- [`@_select_implicit_tags = ( me ) ->`](#@_select_implicit_tags-=--me--->)
+				- [`@_tags_of = ( me, oid ) ->`](#@_tags_of-=--me-oid--->)
+				- [`@_update_tag_selection = ( me, tag ) ->`](#@_update_tag_selection-=--me-tag--->)
+
+> **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+
+
 CoffeeNode TagTool
 ============================================================================================================
 
