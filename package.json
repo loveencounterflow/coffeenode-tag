@@ -1,6 +1,6 @@
 {
   "name": "coffeenode-tagtool",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A simple in-memory tagging library",
   "main": "lib/main.js",
   "scripts": {
@@ -39,7 +39,7 @@
     }
   },
   "readme": "ERROR: No README data found!",
-  "_id": "coffeenode-tagtool@0.0.8",
+  "_id": "coffeenode-tagtool@0.0.9",
   "devDependencies": {
     "asynct": "~1.1.0"
   }
