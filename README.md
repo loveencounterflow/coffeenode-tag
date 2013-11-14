@@ -15,13 +15,13 @@
 			- [`@is_known_tag = ( me, tag ) ->`](#@is_known_tag-=--me-tag--->)
 			- [`@oids_of = ( me, tag = null ) ->`](#@oids_of-=--me-tag-=-null--->)
 			- [`@tag = ( me, oid, tag ) ->`](#@tag-=--me-oid-tag--->)
-			- [`@tags_of = ( me, oid ) ->`](#@tags_of-=--me-oid--->)
 			- [`@untag = ( me, oid, tag ) ->`](#@untag-=--me-oid-tag--->)
+			- [`@tags_of = ( me, oid ) ->`](#@tags_of-=--me-oid--->)
 		- [Selecting & Deselecting](#selecting-&-deselecting)
-			- [`@select_oid = ( me, oid ) ->`](#@select_oid-=--me-oid--->)
 			- [`@select_tag = ( me, tag ) ->`](#@select_tag-=--me-tag--->)
-			- [`@deselect_oid = ( me, oid ) ->`](#@deselect_oid-=--me-oid--->)
 			- [`@deselect_tag = ( me, tag ) ->`](#@deselect_tag-=--me-tag--->)
+			- [`@select_oid = ( me, oid ) ->`](#@select_oid-=--me-oid--->)
+			- [`@deselect_oid = ( me, oid ) ->`](#@deselect_oid-=--me-oid--->)
 			- [`@clear_selection = ( me ) ->`](#@clear_selection-=--me--->)
 			- [`@get_selected_oids = ( me ) ->`](#@get_selected_oids-=--me--->)
 			- [`@is_implicitly_selected_tag = ( me, tag ) ->`](#@is_implicitly_selected_tag-=--me-tag--->)
@@ -106,26 +106,51 @@ Register a new tag in the library.
 
 
 
-
-
-
 #### `@tag = ( me, oid, tag ) ->`
+#### `@untag = ( me, oid, tag ) ->`
 
+Associate or disassociate a given OID and tag.
 
 #### `@tags_of = ( me, oid ) ->`
 
 
-#### `@untag = ( me, oid, tag ) ->`
 
 <!-- =================================================================================================== -->
 ### Selecting & Deselecting
 
-#### `@select_oid = ( me, oid ) ->`
 #### `@select_tag = ( me, tag ) ->`
-#### `@deselect_oid = ( me, oid ) ->`
 #### `@deselect_tag = ( me, tag ) ->`
 
-Select or deselect the given tag or OID.
+Select or deselect the given tag. When a tag is selected, all the OIDs associated with that tag will
+likewise get selected; conversely, when a tag is deselected, all the OIDs that not associated with any other
+selected tag will get deselected. Example:
+
+```coffeescript
+trg = TT.new_registry()
+TT.new_tag      trg, 'fruit'
+TT.new_tag      trg, 'domestic'
+TT.new_tag      trg, 'exotic'
+TT.new_tag      trg, 'sweet'
+TT.new_tag      trg, 'sour'
+TT.tag          trg, 'Apple',     'fruit'
+TT.tag          trg, 'Apple',     'domestic'
+TT.tag          trg, 'Apple',     'sweet'
+TT.tag          trg, 'Pineapple', 'fruit'
+TT.tag          trg, 'Pineapple', 'exotic'
+TT.tag          trg, 'Pineapple', 'sour'
+
+TT.select_tag   trg, 'fruit'  # selects also OIDs `Apple` and `Pineapple`
+
+TT.select_tag   trg, 'sweet'  # `Apple` is already selected, so no change
+
+TT.deselect_tag trg, 'fruit'  # `Pineapple` gets deselected, but as `Apple` is tagged `sweet` and `sweet`
+                              # is still selected, `Apple` stays selected.
+```
+
+#### `@select_oid = ( me, oid ) ->`
+#### `@deselect_oid = ( me, oid ) ->`
+
+Select or deselect the given OID. When
 
 #### `@clear_selection = ( me ) ->`
 
