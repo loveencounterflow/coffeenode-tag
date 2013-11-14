@@ -21,7 +21,6 @@ pod_is_subset_of = ( a, b ) ->
 @new_registry = ->
   R =
     '~isa':         'TAGTOOL/registry'
-    ### keys are tags, values are `{ $oid: 1, }` facets: ###
     '%oids':        {}
     'tags':         {}
     'state':        null
@@ -40,8 +39,8 @@ pod_is_subset_of = ( a, b ) ->
 
 #-----------------------------------------------------------------------------------------------------------
 @_new_state = ( me ) ->
-  ### Given a `TAGTOOL/registry`, a list of OIDs and a list of tags, return a state object that records
-  the selection status. All tags named must be known to the registry; OIDs are arbitrary. ###
+  ### Given a `TAGTOOL/registry`, a list of OIDs and a list of tags, return a state object to record
+  the selection status. ###
   #.........................................................................................................
   R =
     '~isa':           'TAGTOOL/state'

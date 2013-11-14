@@ -11,3 +11,108 @@ A simple in-memory tagging library.
     TAGTOOL = require 'coffeenode-tagtool'
 
 
+
+------------------------
+
+<!-- ################################################################################################### -->
+## API
+
+> **Note**: below, `@` represents the TagTool library, and `me` a TagTool Registry.
+
+<!-- =================================================================================================== -->
+### Object Creation
+
+#### `@new_registry = ->`
+
+Create a new tag registry; the Plain Old Object (POD) that is returned has the format
+
+    registry =
+      '~isa':         'TAGTOOL/registry'
+      '%oids':        {}      # cache; keys are OIDs; all values are 1
+      'tags':         {}      # keys are tags; values are PODs whose keys are OIDs and whose values are 1
+      'state':        null    # result of calling `@_new_state`
+
+
+#### `@new_tag = ( me, tag ) ->`
+
+
+#### `@clear_selection = ( me ) ->`
+
+
+#### `@deselect_oid = ( me, oid ) ->`
+
+
+#### `@deselect_tag = ( me, tag ) ->`
+
+
+#### `@get_max_oid_count = ( me ) ->`
+
+
+#### `@get_max_tag_count = ( me ) ->`
+
+
+#### `@get_selected_oids = ( me ) ->`
+
+
+#### `@has_tag = ( me, oid, tag ) ->`
+
+
+#### `@is_implicitly_selected_tag = ( me, tag ) ->`
+
+
+#### `@is_known_oid = ( me, oid ) ->`
+
+
+#### `@is_known_tag = ( me, tag ) ->`
+
+
+#### `@is_selected_oid = ( me, oid ) ->`
+
+
+#### `@is_selected_tag = ( me, tag ) ->`
+
+
+#### `@oids_of = ( me, tag = null ) ->`
+
+
+#### `@select_oid = ( me, oid ) ->`
+
+
+#### `@select_tag = ( me, tag ) ->`
+
+
+#### `@tag = ( me, oid, tag ) ->`
+
+
+#### `@tags_of = ( me, oid ) ->`
+
+
+#### `@untag = ( me, oid, tag ) ->`
+
+
+<!-- =================================================================================================== -->
+### Private Methods
+
+#### `@_deselect_implicit_tags = ( me ) ->`
+
+
+#### `@_get_all_oids = ( me ) ->`
+
+
+#### `@_get_all_oids_and_max_oid_count = ( me ) ->`
+
+
+#### `@_new_state = ( me ) ->`
+
+Given a `TAGTOOL/registry`, return a state object to record the selection status.
+
+#### `@_select_implicit_tags = ( me ) ->`
+
+
+#### `@_tags_of = ( me, oid ) ->`
+
+
+#### `@_update_tag_selection = ( me, tag ) ->`
+
+
+
