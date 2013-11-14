@@ -1,6 +1,6 @@
 {
   "name": "coffeenode-tagtool",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A simple in-memory tagging library",
   "main": "lib/main.js",
   "scripts": {
