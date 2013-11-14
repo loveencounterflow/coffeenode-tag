@@ -1,6 +1,6 @@
 {
-  "name": "coffeenode-tag",
-  "version": "0.0.1",
+  "name": "coffeenode-tagtool",
+  "version": "0.0.2",
   "description": "A simple in-memory tagging library",
   "main": "lib/main.js",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/loveencounterflow/coffeenode-tag.git"
+    "url": "https://github.com/loveencounterflow/coffeenode-tagtool.git"
   },
   "dependencies": {
     "coffee-script": "~1.6.3",
@@ -26,7 +26,7 @@
   "author": "",
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/loveencounterflow/coffeenode-tag/issues"
+    "url": "https://github.com/loveencounterflow/coffeenode-tagtool/issues"
   },
   "larq": {
     "extensions": {},
@@ -39,7 +39,7 @@
     }
   },
   "readme": "ERROR: No README data found!",
-  "_id": "coffeenode-tag@0.0.1",
+  "_id": "coffeenode-tagtool@0.0.2",
   "devDependencies": {
     "asynct": "~1.1.0"
   }

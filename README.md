@@ -3,5 +3,6 @@
 coffeenode-tagtool
 ============================================================================================================
 
+A simple in-memory tagging library.
 
-A simple in-memory tagging library
+

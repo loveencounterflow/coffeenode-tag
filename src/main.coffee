@@ -2,39 +2,18 @@
 
 
 
-############################################################################################################
-TYPES                     = require 'coffeenode-types'
-#...........................................................................................................
-TRM                       = require 'coffeenode-trm'
-rpr                       = TRM.rpr.bind TRM
-log                       = TRM.log.bind TRM
-echo                      = TRM.echo.bind TRM
-assert                    = require 'assert'
-
-#-----------------------------------------------------------------------------------------------------------
-misfit = {}
-
 #===========================================================================================================
 # HELPERS
 #-----------------------------------------------------------------------------------------------------------
-equals = ( a, b ) ->
-  try
-    assert.deepEqual a, b
-    return true
-  catch error
-    return false
+misfit  = {}
+rpr     = JSON.stringify
 
 #-----------------------------------------------------------------------------------------------------------
-is_subset_of = ( a, b ) ->
-  switch type_of_a = TYPES.type_of a
-    when 'pod'
-      unless ( type_of_b = TYPES.type_of b ) is type_of_a
-        throw new Error "type mismatch: can't compare a #{type_of_a} with a #{type_of_b}"
-      for k, v of a
-        return false if ( not b[ k ]? ) or v isnt b[ k ]
-      return true
-    else
-      throw new Error "unable to determine subsets of value of type #{type_of_a}"
+pod_is_subset_of = ( a, b ) ->
+  for k, v of a
+    return false if ( not b[ k ]? ) or v isnt b[ k ]
+  return true
+
 
 #===========================================================================================================
 # OBJECT CREATION
@@ -43,9 +22,12 @@ is_subset_of = ( a, b ) ->
   R =
     '~isa':         'TAGTOOL/registry'
     ### keys are tags, values are `{ $oid: 1, }` facets: ###
+    '%oids':        {}
     'tags':         {}
-    # ...
+    'state':        null
     # 'rules':        {}
+  #.........................................................................................................
+  R[ 'state' ] = @_new_state R
   #.........................................................................................................
   return R
 
@@ -57,7 +39,7 @@ is_subset_of = ( a, b ) ->
   return me
 
 #-----------------------------------------------------------------------------------------------------------
-@new_state = ( me ) ->
+@_new_state = ( me ) ->
   ### Given a `TAGTOOL/registry`, a list of OIDs and a list of tags, return a state object that records
   the selection status. All tags named must be known to the registry; OIDs are arbitrary. ###
   #.........................................................................................................
@@ -79,8 +61,9 @@ is_subset_of = ( a, b ) ->
   target = me[ 'tags' ][ tag ]
   #.........................................................................................................
   unless target[ oid ]?
-    target[ oid ] = 1
-    return 1
+    me[ '%oids' ][ oid ]  = 1
+    target[ oid ]         = 1
+    return 1 + @_update_tag_selection me, tag
   #.........................................................................................................
   return 0
 
@@ -91,7 +74,7 @@ is_subset_of = ( a, b ) ->
   #.........................................................................................................
   if target[ oid ]?
     delete target[ oid ]
-    return 1
+    return 1 + @_update_tag_selection me, tag
   #.........................................................................................................
   return 0
 
@@ -136,7 +119,7 @@ is_subset_of = ( a, b ) ->
 
 #-----------------------------------------------------------------------------------------------------------
 @_get_all_oids = ( me ) ->
-  return ( @_get_all_oids_and_max_oid_count me )[ 0 ]
+  return me[ '%oids' ]
 
 #-----------------------------------------------------------------------------------------------------------
 @_get_all_oids_and_max_oid_count = ( me ) ->
@@ -168,16 +151,17 @@ is_subset_of = ( a, b ) ->
 #===========================================================================================================
 # STATE, SELECT, DESELECT
 # #-----------------------------------------------------------------------------------------------------------
-# @select = ( me, state, hints... ) ->
+# @select = ( me, hints... ) ->
 
 # #-----------------------------------------------------------------------------------------------------------
-# @deselect = ( me, state, oids, tags ) ->
+# @deselect = ( me, oids, tags ) ->
 
 #-----------------------------------------------------------------------------------------------------------
-@select_tag = ( me, state, tag ) ->
+@select_tag = ( me, tag ) ->
   throw new Error "unknown tag #{rpr tag}" unless @is_known_tag me, tag
   #.........................................................................................................
-  R = 0
+  R     = 0
+  state = me[ 'state' ]
   #.........................................................................................................
   ### Update state if tag is not already selected: ###
   unless state[ 'tags' ][ tag ]?
@@ -191,14 +175,15 @@ is_subset_of = ( a, b ) ->
     selected_oids[ oid ]  = 1
     R                    += 1
   #.........................................................................................................
-  @_select_implicit_tags me, state
+  @_select_implicit_tags me
   return R
 
 #-----------------------------------------------------------------------------------------------------------
-@deselect_tag = ( me, state, tag ) ->
+@deselect_tag = ( me, tag ) ->
   throw new Error "unknown tag #{rpr tag}" unless @is_known_tag me, tag
   #.........................................................................................................
-  R = 0
+  R     = 0
+  state = me[ 'state' ]
   #.........................................................................................................
   ### Update state if tag is selected: ###
   if state[ 'tags' ][ tag ]?
@@ -218,26 +203,46 @@ is_subset_of = ( a, b ) ->
       delete selected_oids[ oid ]
       R += 1
   #.........................................................................................................
-  R += @_deselect_implicit_tags me, state
+  R += @_deselect_implicit_tags me
   return R
 
 #-----------------------------------------------------------------------------------------------------------
-@_select_implicit_tags = ( me, state ) ->
+@select_oid = ( me, oid ) ->
+  throw new Error "unknown oid #{rpr oid}" unless @is_known_oid me, oid
+  state = me[ 'state' ]
+  return 0 if state[ 'oids' ][ oid ]?
+  state[ 'oids' ][ oid ] = 1
+  return 1 + @_select_implicit_tags me
+
+#-----------------------------------------------------------------------------------------------------------
+@deselect_oid = ( me, oid ) ->
+  throw new Error "unknown oid #{rpr oid}" unless @is_known_oid me, oid
+  state = me[ 'state' ]
+  return 0 unless state[ 'oids' ][ oid ]?
+  delete state[ 'oids' ][ oid ]
+  return 1 + @_deselect_implicit_tags me
+
+#-----------------------------------------------------------------------------------------------------------
+@_select_implicit_tags = ( me ) ->
   ### Implicit-select all those tags that have all their OIDs selected: ###
+  state         = me[ 'state' ]
   selected_oids = state[ 'oids' ]
+  #.........................................................................................................
   for tag, tagged_oids of me[ 'tags' ]
     if state[ 'tags' ][ tag ]?
       delete state[ 'implicit-tags' ][ tag ]
       continue
-    continue unless is_subset_of tagged_oids, selected_oids
+    continue unless pod_is_subset_of tagged_oids, selected_oids
     state[ 'implicit-tags' ][ tag ]  = 1
   #.........................................................................................................
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@_deselect_implicit_tags = ( me, state ) ->
+@_deselect_implicit_tags = ( me ) ->
   ### Implicit-deselect all those tags that do not have all their OIDs selected: ###
+  state         = me[ 'state' ]
   selected_oids = state[ 'oids' ]
+  #.........................................................................................................
   for tag of state[ 'implicit-tags' ]
     has_selected_tag = no
     for oid of me[ 'tags' ][ tag ]
@@ -247,36 +252,37 @@ is_subset_of = ( a, b ) ->
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@select_oid = ( me, state, oid ) ->
-  throw new Error "unknown oid #{rpr oid}" unless @is_known_oid me, oid
-  return 0 if state[ 'oids' ][ oid ]?
-  state[ 'oids' ][ oid ] = 1
-  return 1 + @_select_implicit_tags me, state
+@_update_tag_selection = ( me, tag ) ->
+  return if @is_selected_tag me, tag then @select_tag me, tag else @deselect_tag me, tag
 
 #-----------------------------------------------------------------------------------------------------------
-@get_selected_oids = ( me, state ) ->
+@get_selected_oids = ( me ) ->
   return ( oid for oid of state[ 'oids' ] )
 
 #-----------------------------------------------------------------------------------------------------------
-@is_selected_tag = ( me, state, tag ) ->
+@is_selected_tag = ( me, tag ) ->
   throw new Error "unknown tag #{rpr tag}" unless @is_known_tag me, tag
+  state = me[ 'state' ]
   return state[ 'tags' ][ tag ]?
 
 #-----------------------------------------------------------------------------------------------------------
-@is_implicitly_selected_tag = ( me, state, tag ) ->
+@is_implicitly_selected_tag = ( me, tag ) ->
   throw new Error "unknown tag #{rpr tag}" unless @is_known_tag me, tag
+  state = me[ 'state' ]
   return state[ 'implicit-tags' ][ tag ]?
 
 #-----------------------------------------------------------------------------------------------------------
-@is_selected_oid = ( me, state, oid ) ->
+@is_selected_oid = ( me, oid ) ->
   throw new Error "unknown oid #{rpr oid}" unless @is_known_oid me, oid
+  state = me[ 'state' ]
   return state[ 'oids' ][ oid ]?
 
 #-----------------------------------------------------------------------------------------------------------
-@clear_selection = ( me, state ) ->
+@clear_selection = ( me ) ->
+  state = me[ 'state' ]
   delete state[ 'tags'          ][ tag ] for tag of state[ 'tags'          ]
   delete state[ 'implicit-tags' ][ tag ] for tag of state[ 'implicit-tags' ]
   delete state[ 'oids'          ][ oid ] for oid of state[ 'oids'          ]
-  return state
+  return null
 
 
