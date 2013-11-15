@@ -8,15 +8,16 @@
 		- [Object Creation](#object-creation)
 			- [`@new_registry = ->`](#@new_registry-=-->)
 			- [`@register_tag = ( me, tag ) ->`](#@register_tag-=--me-tag--->)
-			- [`@get_max_oid_count = ( me ) ->`](#@get_max_oid_count-=--me--->)
-			- [`@get_max_tag_count = ( me ) ->`](#@get_max_tag_count-=--me--->)
-			- [`@has_tag = ( me, oid, tag ) ->`](#@has_tag-=--me-oid-tag--->)
-			- [`@is_known_oid = ( me, oid ) ->`](#@is_known_oid-=--me-oid--->)
-			- [`@is_known_tag = ( me, tag ) ->`](#@is_known_tag-=--me-tag--->)
-			- [`@oids_of = ( me, tag = null ) ->`](#@oids_of-=--me-tag-=-null--->)
+		- [Tagging](#tagging)
 			- [`@tag = ( me, oid, tag ) ->`](#@tag-=--me-oid-tag--->)
 			- [`@untag = ( me, oid, tag ) ->`](#@untag-=--me-oid-tag--->)
-			- [`@tags_of = ( me, oid ) ->`](#@tags_of-=--me-oid--->)
+			- [`@tags_of = ( me, oid = null ) ->`](#@tags_of-=--me-oid-=-null--->)
+			- [`@has_tag = ( me, oid, tag ) ->`](#@has_tag-=--me-oid-tag--->)
+			- [`@oids_of = ( me, tag = null ) ->`](#@oids_of-=--me-tag-=-null--->)
+			- [`@is_known_tag = ( me, tag ) ->`](#@is_known_tag-=--me-tag--->)
+			- [`@is_known_oid = ( me, oid ) ->`](#@is_known_oid-=--me-oid--->)
+			- [`@get_max_tag_count = ( me ) ->`](#@get_max_tag_count-=--me--->)
+			- [`@get_max_oid_count = ( me ) ->`](#@get_max_oid_count-=--me--->)
 		- [Selecting & Deselecting](#selecting-&-deselecting)
 			- [`@select_tag = ( me, tag ) ->`](#@select_tag-=--me-tag--->)
 			- [`@deselect_tag = ( me, tag ) ->`](#@deselect_tag-=--me-tag--->)
@@ -80,40 +81,35 @@ Create a new tag registry; the Plain Old Object (POD) that is returned has the f
 Register a new tag in the library.
 
 
-#### `@get_max_oid_count = ( me ) ->`
-
-
-#### `@get_max_tag_count = ( me ) ->`
-
-
-
-
-
-#### `@has_tag = ( me, oid, tag ) ->`
-
-
-
-
-#### `@is_known_oid = ( me, oid ) ->`
-
-
-#### `@is_known_tag = ( me, tag ) ->`
-
-
-
-
-#### `@oids_of = ( me, tag = null ) ->`
-
-
+<!-- =================================================================================================== -->
+### Tagging
 
 #### `@tag = ( me, oid, tag ) ->`
 #### `@untag = ( me, oid, tag ) ->`
 
 Associate or disassociate a given OID and tag.
 
-#### `@tags_of = ( me, oid ) ->`
+#### `@tags_of = ( me, oid = null ) ->`
 
+Returns all the tags a given OID is associated with; if no OID is given, return a list of all registered
+tags in the given registry.
 
+#### `@has_tag = ( me, oid, tag ) ->`
+
+Return whether the given OID is associated with the given tag.
+
+#### `@oids_of = ( me, tag = null ) ->`
+
+Return all the OIDs that the given tag is associated with; if no tag is given, return a list of all the
+OIDs known to the given registry.
+
+#### `@is_known_tag = ( me, tag ) ->`
+#### `@is_known_oid = ( me, oid ) ->`
+
+Return whether a given tag or OID is known to the given registry.
+
+#### `@get_max_tag_count = ( me ) ->`
+#### `@get_max_oid_count = ( me ) ->`
 
 <!-- =================================================================================================== -->
 ### Selecting & Deselecting
